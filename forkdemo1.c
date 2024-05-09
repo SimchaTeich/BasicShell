@@ -11,7 +11,7 @@ main()
 {
     pid_t ret_from_fork, mypid;
 
-    mypid = getpid();                                /* who am i?      */
+    mypid = getpid();                        /* who am i?      */
     printf("Before: my pid is %d\n", mypid); /* tell the world */
 
     ret_from_fork = fork();
