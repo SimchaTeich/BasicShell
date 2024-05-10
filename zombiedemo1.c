@@ -2,7 +2,7 @@
  * zombiedemo1.c - My program (not from the book)
  *     Illustrating a Zombie proccess.
  *     Run this program in your current terminal,
- *     and press "ps -fla" in other terminal.
+ *     and press "ps -fla" in another terminal.
  */
 #include <stdio.h>
 #include <sys/types.h>
