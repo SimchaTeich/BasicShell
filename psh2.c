@@ -12,6 +12,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <errno.h>
+#include <signal.h>
 
 #define MAXARGS 20            /* cmdline args */
 #define ARGLEN 100            /* token length */
@@ -71,9 +72,11 @@ int execute(char *arglist[])
 	    break;
 	
 	default:
+	    signal(SIGINT, SIG_IGN);      /* protect psh2 from SIGINT from child procces */
 	    while (wait(&exitstatus) != pid)
 		;
 	    printf("child exited with status %d, %d\n", exitstatus>>8, exitstatus&0377);
+	    signal(SIGINT, SIG_DFL);      /* now, until the next command, user can say goodbay */
 	    break;
 
     }
