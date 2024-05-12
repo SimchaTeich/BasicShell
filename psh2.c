@@ -25,17 +25,18 @@ int main()
     char *arglist[MAXARGS+1]; /* an array of ptrs */
     int numargs;              /* insex into array */
     char argbuf[ARGLEN];      /* read stufff here */
+    char *fgets_rv;
 
     numargs = 0;
     while (numargs < MAXARGS)
     {
         printf("Arg[%d]? ", numargs);
-	if (fgets(argbuf, ARGLEN, stdin) && *argbuf != '\n')
+	if ((fgets_rv = fgets(argbuf, ARGLEN, stdin)) && *argbuf != '\n')
 	{
 	    arglist[numargs] = makestring(argbuf);
 	    ++numargs;
 	}
-	else
+	else if(fgets_rv != NULL)
 	{
 	    if (numargs > 0)             /* any args?  */
 	    {
@@ -44,6 +45,8 @@ int main()
 		numargs = 0;             /* and reset  */
 	    }
 	}
+	else
+	    break;
     }
 }
 
