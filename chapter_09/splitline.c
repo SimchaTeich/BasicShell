@@ -11,6 +11,8 @@
 
 #define is_delim(x) ((x)==' ' || (x)=='\t')
 
+char * newstr(char *s, int l);
+
 /*
  * purpose: read next command line from fp
  * returns: synamiclly allocated string holding command line
@@ -34,7 +36,7 @@ char *next_cmd(char *prompt, FILE *fp)
 	    if (bufspace == 0)                    /* y: 1st time  */
 		buf = emalloc(BUFSIZ);
 	    else                                  /* or expand    */
-		buf = erealloc(buf, bufspace+BUFSIZ)
+		buf = erealloc(buf, bufspace+BUFSIZ);
 	    
 	    bufspace += BUFSIZ;                   /* update size  */
 	}
@@ -94,13 +96,13 @@ char ** splitline(char *line)
 	{
 	    args = erealloc(args, bufspace + BUFSIZ);
 	    bufspace += BUFSIZ;
-	    spots += (BUFSIZ/sizeof(char *))
+	    spots += (BUFSIZ/sizeof(char *));
 	}
 
 	/* mark start, then find end of word */
 	start = cp;
 	len   = 1;
-	while (*++cp != '\0' && !(is_delim(*cp))
+	while (*++cp != '\0' && !(is_delim(*cp)))
 	    ++len;
 
 	args[argnum] = newstr(start, len);
@@ -156,7 +158,7 @@ void * emalloc(size_t n)
     if ((rv = malloc(n)) == NULL)
 	fatal("out of memory", "", 1);
 
-    return rv
+    return rv;
 }
 
 
@@ -168,6 +170,6 @@ void * erealloc(void *p, size_t n)
     if ((rv = realloc(p, n)) == NULL)
 	fatal("realloc() faild", "", 1);
 
-    return rv
+    return rv;
 }
 
