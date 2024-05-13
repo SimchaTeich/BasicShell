@@ -111,3 +111,63 @@ char ** splitline(char *line)
     return args;
 }
 
+
+
+/* 
+ * purpose: constructor for strings
+ * returns: a string, never NULL
+ * */
+char * newstr(char *s, int l)
+{
+    char *rv = emalloc(l+1);
+
+    rv[l] = '\0';
+    strncpy(rv, s, l);
+
+    return rv;
+}
+
+
+
+/*
+ * purpose: free the list returned by splitline
+ * returns: nothing
+ *  action: free all strings in list and then free the list
+ * */
+void freelist(char **list)
+{
+    char **cp = list;
+
+    while (*cp)
+    {
+	free(*cp);
+	++cp;
+    }
+
+    free(list);
+}
+
+
+
+void * emalloc(size_t n)
+{
+    void *rv;
+
+    if ((rv = malloc(n)) == NULL)
+	fatal("out of memory", "", 1);
+
+    return rv
+}
+
+
+
+void * erealloc(void *p, size_t n)
+{
+    void *rv;
+
+    if ((rv = realloc(p, n)) == NULL)
+	fatal("realloc() faild", "", 1);
+
+    return rv
+}
+
