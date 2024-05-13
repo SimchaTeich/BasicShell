@@ -1,7 +1,7 @@
 /* execute.c - code used by small shell to execute commands */
 
 #include <stdio.h>
-#include <srdlib.h>
+#include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
 #include <sys/wait.h>
