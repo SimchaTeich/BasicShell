@@ -8,11 +8,11 @@
  *      b) control structures (e.g. if, while, for)
  */
 
-#include <stdio.>
+#include <stdio.h>
 #include "smsh.h"
 
-int is_control_command(char *);
-int do_control_command(char *);
+int is_control_command(char *s);
+int do_control_command(char **args);
 int ok_to_execute();
 
 /*

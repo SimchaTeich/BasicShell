@@ -4,14 +4,15 @@
  *    if_state and if_result
  */
 #include <stdio.h>
+#include <string.h>
 #include "smsh.h"
 
 enum states { NEUTRAL, WANT_THEN, THEN_BLOCK };
-enum results { SUCCES, FAIL };
+enum results { SUCCESS, FAIL };
 
 static int if_state  = NEUTRAL;
 static int if_result = SUCCESS;
-static int last_stat = 0;
+static int last_state = 0;
 
 int syn_err(char *msg);
 
@@ -28,7 +29,7 @@ int ok_to_execute()
 
     if (if_state == WANT_THEN)
     {
-        syn_error("then expected");
+        syn_err("then expected");
 	rv = 0;
     }
     else if (if_state == THEN_BLOCK && if_result == SUCCESS)
@@ -69,7 +70,7 @@ int do_control_command(char **args)
             rv = syn_err("if unexpected");
 	else
 	{
-	    last_state = procces(args+1);
+	    last_state = process(args+1);
 	    if_result  = (last_state == 0 ? SUCCESS : FAIL);
 	    if_state   = WANT_THEN;
 	    rv         = 0;
@@ -78,7 +79,7 @@ int do_control_command(char **args)
     else if (strcmp(cmd, "then") == 0)
     {
         if (if_state != WANT_THEN)
-	    rv = syn_error("then unexpected");
+	    rv = syn_err("then unexpected");
 	else
 	{
 	    if_state   = THEN_BLOCK;
@@ -88,7 +89,7 @@ int do_control_command(char **args)
     else if (strcmp(cmd, "fi") == 0)
     {
         if (if_state != THEN_BLOCK)
-            rv = syn_error("fi unexpected");
+            rv = syn_err("fi unexpected");
 	else
 	{
 	    if_state   = NEUTRAL;

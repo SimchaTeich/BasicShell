@@ -8,4 +8,4 @@ void *  emalloc(size_t n);
 void *  erealloc(void *p, size_t n);
 int     execute(char ** arglist);
 void    fatal(char *s1, char *s2, int n);
-
+int     process(char **args);
