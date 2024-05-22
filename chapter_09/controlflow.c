@@ -40,6 +40,17 @@ int ok_to_execute()
 }
 
 
+/*
+ * purpose: boolean to report if the command is a shell control command
+ * results: 0 ro 1
+ * */
+int is_control_command(char *s)
+{
+    return (strcmp(s, "if")   == 0 ||
+	    strcmp(s, "then") == 0 ||
+	    strcmp(s, "fi")   == 0);
+}
+
 
 
 
