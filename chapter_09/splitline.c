@@ -15,7 +15,7 @@ char * newstr(char *s, int l);
 
 /*
  * purpose: read next command line from fp
- * returns: synamiclly allocated string holding command line
+ * returns: dynamiclly allocated string holding command line
  *  errors: NULL at EOF (not really an error)
  *          calls fatal from emalloc()
  *   notes: allocates space in BUFSIZ chunks.
@@ -69,12 +69,12 @@ char *next_cmd(char *prompt, FILE *fp)
 char ** splitline(char *line)
 {
     char **args;
-    char spots    = 0;                    /* spots in table       */
-    int  bufspace = 0;                    /* bytes in table       */
-    int  argnum   = 0;                    /* slots used           */
-    char *cp      = line;                 /* pos in string        */
-    char *start;
-    int  len;
+    char   spots    = 0;                  /* spots in table       */
+    int    bufspace = 0;                  /* bytes in table       */
+    int    argnum   = 0;                  /* slots used           */
+    char  *cp       = line;               /* pos in string        */
+    char  *start;
+    int    len;
 
     if (line == NULL)                     /* handle special case  */
         return NULL;
