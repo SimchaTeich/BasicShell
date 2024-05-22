@@ -40,6 +40,7 @@ int ok_to_execute()
 }
 
 
+
 /*
  * purpose: boolean to report if the command is a shell control command
  * results: 0 ro 1
@@ -53,6 +54,52 @@ int is_control_command(char *s)
 
 
 
+/* 
+ * purpose: Process "if", "then", "fi" - change state or detect error
+ * returns: 0 if ok, -1 for syntax error
+ * */
+int do_control_command(char **args)
+{
+    char *cmd = args[0];
+    int   rv  = -1;
+
+    if (strcmp(cmd, "if") == 0)
+    {
+        if (if_state != NEUTRAL)
+            rv = syn_err("if unexpected");
+	else
+	{
+	    last_state = procces(args+1);
+	    if_result  = (last_state == 0 ? SUCCESS : FAIL);
+	    if_state   = WANT_THEN;
+	    rv         = 0;
+	}
+    }
+    else if (strcmp(cmd, "then") == 0)
+    {
+        if (if_state != WANT_THEN)
+	    rv = syn_error("then unexpected");
+	else
+	{
+	    if_state   = THEN_BLOCK;
+	    rv         = 0; 
+	}
+    }
+    else if (strcmp(cmd, "fi") == 0)
+    {
+        if (if_state != THEN_BLOCK)
+            rv = syn_error("fi unexpected");
+	else
+	{
+	    if_state   = NEUTRAL;
+	    rv         = 0;
+	}
+    }
+    else
+	fatal("internal error processing:", cmd, 2);
+
+    return rv;
+}
 
 
 
