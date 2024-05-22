@@ -103,5 +103,15 @@ int do_control_command(char **args)
 
 
 
-
+/*
+ * purpose: handles syntax error in control structures
+ * details: reset state to NEUTRAL
+ * returns: -1 in interactive mode. Shouls call fatal in scripts
+ * */
+int syn_err(char *msg)
+{
+    if_state = NEUTRAL;
+    fprintf(stderr, "syntax error: %s\n", msg);
+    return -1;
+}
 
