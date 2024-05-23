@@ -21,7 +21,7 @@ int builtin_command(char **args, int *resultp)
 
     if (strcmp(args[0], "set") == 0)                /* 'set' command? */
     {
-        VList();
+        VLlist();
 	*resultp = 0;
 	rv = 1;
     }
