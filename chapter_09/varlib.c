@@ -70,3 +70,25 @@ int VLstore(char *name, char *val)
 
 
 
+/* 
+ * returns new strin of form name=value or NULL on error
+ * */
+char *new_string(char *name, char *val)
+{
+    char *retval;
+
+    retval = malloc(strlen(name) + strlen(val) + 2); /* 2 for '=' and '\0' */
+    if (retval != NULL)
+	sprintf(retval, "%s=%s", name, value);
+
+    return retval;
+}
+
+
+
+
+
+
+
+
+
