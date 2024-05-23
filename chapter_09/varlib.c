@@ -201,4 +201,41 @@ int VLenviorn2table(char *env[])
 
 
 
+/*
+ * build an array of pointers suitable for making a new environment
+ * note, you need to free() this when done to avoid memory leaks
+ * */
+char ** VLtable2environ()
+{
+    int  i,                           /* index             */
+	 j,                           /* another index     */
+	 n = 0;                       /* counter           */
+    char **envtab;                    /* array of pointers */
+
+
+    /* first, count the number of global variables  */
+    for (i = 0; i < MAXVARS && tab[i].str != NULL; ++i)
+        if (tab[i].global == 1)
+	    ++n;
+
+    /* then, allocate space for that many variables */
+    envtab = (char **) malloc((n + 1) * sizeof(char *));
+    if (envtab == NULL)
+	return NULL;
+
+    /* then, load the array with pointers           */
+    for (i = 0, j = 0; i < MAXVARS && tab[i].str != NULL; ++i)
+    {
+        if (tab[i].global == 1)
+	{
+	    entab[j] = tab[i].str;
+	    ++j
+	}
+    }
+
+    envtab[j] = NULL;
+    return envtab;
+}
+
+
 
