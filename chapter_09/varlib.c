@@ -195,6 +195,8 @@ int VLenviorn2table(char *env[])
 	tab[i].global = 0;
 	++i;
     }
+
+    return 1;
 }
 
 
