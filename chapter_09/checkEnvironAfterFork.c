@@ -56,7 +56,7 @@ void child()
     printf("child: CHANGE_ME=%s\n", cp);
     printf("child: Change it...\n");
     
-    sleep(1);
+    sleep(5);
 
     cp2  = cp + strlen(cp) - 1;
     *cp2 = '2';
