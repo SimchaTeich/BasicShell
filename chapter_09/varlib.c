@@ -150,4 +150,23 @@ static struct var * find_item(char *name, int first_blank)
 
 
 
+/*
+ * performs the shell's set command
+ * Lists the contents of the variable table, marking each
+ * exported variable with the symbol '*'
+ * */
+void VLlist()
+{
+    int  i;
+    for (i = 0; i < MAXVARS && tab[i].str != NULL; ++i)
+    {
+        if (tab[i].global)
+	    printf("  * %s\n", tab[i].str);
+	else
+	    printf("    %s\n", tab[i].str);
+    }
+}
+
+
+
 
