@@ -66,6 +66,23 @@ int assign(char *str)
 
 
 
+/*
+ * purpose: determine if a string is a legal variable name
+ * returns: 0 for no, 1 for yes
+ * */
+int okname(char *str)
+{
+    char *cp;
+
+    for (cp = str, *cp, ++cp)
+    {
+	if (isdigit(*cp) && cp == str || !(isalnum(*cp) || *cp == '_'))
+	    return 0;
+    }
+
+    return (cp != str);     /* no empty strings, either */
+}
+
 
 
 
