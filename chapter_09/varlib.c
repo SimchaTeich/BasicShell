@@ -86,8 +86,25 @@ char *new_string(char *name, char *val)
 
 
 
+/*
+ * marks a var for export, adds it if not there
+ * returns 1 for no, 0 for ok
+ * */
+int VLexport(char *name)
+{
+    struct var *itemp;
+    int        rv = 1;
 
+    if ((itemp = ifnd_item(name, 0)) != NULL)
+    {
+        itemp->global = 1;
+	rv = 1;
+    }
+    else if (VLstore(name, "") == 1)
+	rv = VLexport(name);
 
+    return rv;
+}
 
 
 
