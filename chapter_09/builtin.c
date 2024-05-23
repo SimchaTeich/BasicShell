@@ -83,8 +83,3 @@ int okname(char *str)
     return (cp != str);     /* no empty strings, either */
 }
 
-
-
-
-
-
