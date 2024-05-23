@@ -57,7 +57,7 @@ int VLstore(char *name, char *val)
     if ((itemp=find_item(name, 1)) != NULL &&
 	(s=new_string(name, val))  != NULL)
     {
-        if (itempp->str)                         /* has a val?   */
+        if (itemp->str)                          /* has a val?   */
 	    free(itemp->str);                    /* y: remove it */
 
 	itemp->str = s;
@@ -76,7 +76,7 @@ char *new_string(char *name, char *val)
 
     retval = malloc(strlen(name) + strlen(val) + 2); /* 2 for '=' and '\0' */
     if (retval != NULL)
-	sprintf(retval, "%s=%s", name, value);
+	sprintf(retval, "%s=%s", name, val);
 
     return retval;
 }
@@ -107,7 +107,7 @@ int VLexport(char *name)
     struct var *itemp;
     int        rv = 1;
 
-    if ((itemp = ifnd_item(name, 0)) != NULL)
+    if ((itemp = find_item(name, 0)) != NULL)
     {
         itemp->global = 1;
 	rv = 1;
@@ -133,9 +133,9 @@ static struct var * find_item(char *name, int first_blank)
 
     for (i = 0; i < MAXVARS && tab[i].str != NULL; ++i)
     {
-        s = teb[i].str;
+        s = tab[i].str;
 
-	if (strncmp(s, name, n) == 0 && s[len] == '=')
+	if (strncmp(s, name, len) == 0 && s[len] == '=')
 	    return &tab[i];
     }
 
@@ -228,8 +228,8 @@ char ** VLtable2environ()
     {
         if (tab[i].global == 1)
 	{
-	    entab[j] = tab[i].str;
-	    ++j
+	    envtab[j] = tab[i].str;
+	    ++j;
 	}
     }
 

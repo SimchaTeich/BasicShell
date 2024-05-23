@@ -38,10 +38,10 @@ int builtin_command(char **args, int *resultp)
 	else
 	    *resultp = 1;
 	
-	rv = 1
+	rv = 1;
     }
 
-    return rv
+    return rv;
 }
 
 
@@ -74,7 +74,7 @@ int okname(char *str)
 {
     char *cp;
 
-    for (cp = str, *cp, ++cp)
+    for (cp = str; *cp; ++cp)
     {
 	if (isdigit(*cp) && cp == str || !(isalnum(*cp) || *cp == '_'))
 	    return 0;
