@@ -86,7 +86,7 @@ char *new_string(char *name, char *val)
 /*
  * returns value of var or empty string if not there
  * */
-char VLlookup(char *name)
+char * VLlookup(char *name)
 {
     struct var *itemp;
 
