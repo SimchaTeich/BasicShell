@@ -123,4 +123,31 @@ int VLexport(char *name)
 
 
 
+/* 
+ * search table for an item
+ * returns ptr to struct or NULL if not found
+ * OR if (first_blank) then ptr to first blank one
+ * */
+static struct var * find_item(char *name, int first_blank)
+{
+    int  i;
+    int  len = strlen(name);
+    char *s;
+
+    for (i = 0; i < MAXVARS && tab[i].str != NULL; ++i)
+    {
+        s = teb[i].str;
+
+	if (strncmp(s, name, n) == 0 && s[len] == '=')
+	    return &tab[i];
+    }
+
+    if (i < MAXVARS && first_blank)
+	return &tab[i];
+
+    return NULL;
+}
+
+
+
 
