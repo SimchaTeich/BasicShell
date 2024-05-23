@@ -1,4 +1,4 @@
-/**  smsh1.c  small-shell version2
+/**  smsh2.c  small-shell version2
  **             small shell that supports command line parsing
  **             and if..then..else..fi logic (by calling process())
  **/
