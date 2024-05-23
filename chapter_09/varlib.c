@@ -41,3 +41,32 @@ static char *new_string(char *name, char *val);
 static struct var *find_item(char *name, int first_blank);
 
 
+
+
+
+
+/*
+ * traverse list, if found, replace it, else ass at end
+ * since there is no delete, a blank one is a free one
+ * return 1 if trouble, 0 if ok (like a command)
+ * */
+int VLstore(char *name, char *val)
+{
+    struct var *itemp;
+    char       *s;
+    int        rv = 1;
+
+    /* find spot to put it, and make new string */
+    if ((itemp=find_item(name, 1)) != NULL &&
+	(s=new_string(name, val))  != NULL)
+    {
+        if (itempp->str)                         /* has a val?   */
+	    free(itemp->str);                    /* y: remove it */
+
+	itemp->str = s;
+	rv = 0;                                  /* ok!          */
+    }
+}
+
+
+
