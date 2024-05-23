@@ -87,6 +87,21 @@ char *new_string(char *name, char *val)
 
 
 /*
+ * returns value of var or empty string if not there
+ * */
+char VLlookup(char *name)
+{
+    struct var *itemp;
+
+    if ((itemp = find_item(name, 0)) != NULL)
+	return itemp->str + strlen(name) + 1;
+
+    return "";
+}
+
+
+
+/*
  * marks a var for export, adds it if not there
  * returns 1 for no, 0 for ok
  * */
