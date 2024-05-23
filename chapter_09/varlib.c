@@ -42,9 +42,6 @@ static struct var *find_item(char *name, int first_blank);
 
 
 
-
-
-
 /*
  * traverse list, if found, replace it, else ass at end
  * since there is no delete, a blank one is a free one
@@ -164,6 +161,39 @@ void VLlist()
 	    printf("  * %s\n", tab[i].str);
 	else
 	    printf("    %s\n", tab[i].str);
+    }
+}
+
+
+
+/*
+ * initialize the variable table by loading array of strings
+ * returns 1 for ok, 0 for not ok
+ * */
+int VLenviorn2table(char *env[])
+{
+    int  i;
+    char *newstring;
+
+    for (i = 0; env[i] != NULL; ++i)
+    {
+        if (i == MAXVARS)
+	    return 0;
+
+	if((newstring = malloc(strlen(env[i]) + 1)) == NULL)
+	    return 0;
+
+	strcpy(newstring, env[i]);
+	tab[i].str = newstring;
+	tab[i].global = 1;
+    }
+
+    /* we don't really need it*/
+    while (i < MAXVARS)
+    {
+        tab[i].str = NULL;
+	tab[i].global = 0;
+	++i;
     }
 }
 
