@@ -20,6 +20,7 @@ int main()
     /* check for existance of environment variable CHANGE_ME=value1 */
     if (cp != NULL && strcmp(cp, "value1") == 0)
     {
+	printf("Before fork(), CHANGE_ME addr is %p\n", cp - strlen("CHANGE_ME="));
         printf("Before fork(), CHANGE_ME=%s\n", cp);
     }
     else
@@ -51,6 +52,7 @@ void child()
     char *cp = getenv("CHANGE_ME");
     char *cp2;
 
+    printf("child: CHANGE_ME addr is %p\n", cp - strlen("CHANGE_ME="));
     printf("child: CHANGE_ME=%s\n", cp);
     printf("child: Change it...\n");
     
@@ -70,9 +72,13 @@ void child()
  * */
 void parent()
 {
+    char *cp;
+
     while (wait(NULL) != -1)
 	;
 
+    cp = getenv("CHANGE_ME");
+    printf("After wait(), CHANGE_ME addr is %p\n", cp - strlen("CHANGE_ME="));
     printf("After wait(), CHANGE_ME=%s\n", getenv("CHANGE_ME"));
 }
 
