@@ -46,5 +46,28 @@ int builtin_command(char **args, int *resultp)
 
 
 
+/*
+ * purpose: execute name=val AND ensure that name is legal
+ * returns: -1 for illegal lval, or result of VLstore
+ * warning: modifies the string, but restore it to normal
+ * */
+int assign(char *str)
+{
+    char *cp;
+    int  rv;
+
+    cp = strchr(str, '=');
+    *cp = '\0';
+    rv = (okname(str) ? VLstore(str, cp+1) : -1);
+    *cp = '=';
+
+    return rv;
+}
+
+
+
+
+
+
 
 
