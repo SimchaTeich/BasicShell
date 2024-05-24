@@ -56,10 +56,12 @@ void child()
     printf("child: CHANGE_ME=%s\n", cp);
     printf("child: Change it...\n");
     
-    sleep(5);
-
     cp2  = cp + strlen(cp) - 1;
     *cp2 = '2';
+    sleep(5);
+    
+    cp = getenv("CHANGE_ME");
+    printf("child: CHANGE_ME addr is %p\n", cp - strlen("CHANGE_ME="));
     printf("child: CHANGE_ME=%s\n", cp);
     printf("child: done\n");
     exit(0);
