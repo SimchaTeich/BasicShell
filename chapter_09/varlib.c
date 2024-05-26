@@ -170,7 +170,7 @@ void VLlist()
  * initialize the variable table by loading array of strings
  * returns 1 for ok, 0 for not ok
  * */
-int VLenviorn2table(char *env[])
+int VLenviron2table(char *env[])
 {
     int  i;
     char *newstring;
