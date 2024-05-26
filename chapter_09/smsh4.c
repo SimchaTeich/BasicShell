@@ -8,6 +8,7 @@
 #include <unistd.h>
 #include <signal.h>
 #include "smsh.h"
+#include "varlib.h"
 
 #define DFL_PROMPT "> "
 
