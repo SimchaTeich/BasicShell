@@ -3,6 +3,6 @@ char  * VLlookup(char *name);
 int     VLexport(char *name);
 void    VLlist();
 int     VLenviron2table(char *env[]);
-char ** VLtable2enviorn();
+char ** VLtable2environ();
 
 
