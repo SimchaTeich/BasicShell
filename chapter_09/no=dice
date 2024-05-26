@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# no=dice - exploration 9.2. 
+#        this shell script called 'no=dice'.
+#        so, the question is: what will
+#        happen if shell run 'no=dice'?
+#
+
+echo "Hey, I'm no=dice"
+
