@@ -8,6 +8,7 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include "varlib.h"
 
 /*
  * purpose: run a program passing it arguments
@@ -28,6 +29,7 @@ int execute(char *argv[])
     }
     else if (pid == 0)
     {
+	extern char **enviorn;
 	environ = VLtable2environ();
         signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
