@@ -29,7 +29,7 @@ int execute(char *argv[])
     }
     else if (pid == 0)
     {
-	extern char **enviorn;
+	extern char **environ;
 	environ = VLtable2environ();
         signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
