@@ -1,0 +1,10 @@
+#!/bin/bash
+#
+# set - exploration 9.1. 
+#        this shell script called 'set'.
+#        so, the question is: what will
+#        happen if shell run 'set'?
+#
+
+echo "Hey, my name is set"
+
