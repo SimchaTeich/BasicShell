@@ -8,35 +8,32 @@
     #include "myshell.h"
 #endif
 
+
+
 /*
- * purpose: process user command
- * returns: result of processing command
- * details: if a buit-in then call appropriarete function,
- *          if not execute()
- *  errors: arise from subroutines, handles there
+ * purpose: process user command.
+ *          take care on control-command (if..then..)
+ *                    on buitin-command  (variables, cd..)
+ *                    and the regular commands.
+ * return: none.
  * */
 void process()
 {
     extern command *pipeline;
     extern int      cmdno;
-    char          **args    = pipeline[cmdno].arglist;
-    int             rv      = 0;
+    char          **args = pipeline[cmdno].arglist;
 
     if (args[0] == NULL)
-    {
-        rv = 0;
-    }
+        return;
+
+    /* check for changing state for if-statement */
     else if (is_control_command(args[0]))
-    {
-        rv = do_control_command(args);
-    }
+        do_control_command(args);
+    
     else if (ok_to_execute())
     {
-        if (!builtin_command(args, &rv))
-            //rv = execute();
+        if (!builtin_command(args))//, &rv))
 	    execute();
     }
-
-    //return rv;
 }
 

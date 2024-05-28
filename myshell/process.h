@@ -4,11 +4,11 @@
 
 
 /*
- * purpose: process user command
- * returns: result of processing command
- * details: if a buit-in then call appropriarete function,
- *          if not execute()
- *  errors: arise from subroutines, handles there
+ * purpose: process user command.
+ *          take care on control-command (if..then..)
+ *                    on buitin-command  (variables, cd..)
+ *                    and the regular commands.
+ * return: none.
  * */
-//int process(char **args);
 void process();
+
