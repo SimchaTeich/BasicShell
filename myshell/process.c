@@ -32,7 +32,7 @@ void process()
     
     else if (ok_to_execute())
     {
-        if (!builtin_command(args))//, &rv))
+        if (!builtin_command(args))
 	    execute();
     }
 }
