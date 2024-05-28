@@ -20,7 +20,7 @@
 void    setup();
 void    init_pipeline(char *line);
 //void    free_pipeline();
-//void print_pipeline();
+void print_pipeline();
 
 
 /* commands in pipeline are globals */
@@ -45,15 +45,11 @@ int main()
     while ((line = next_cmd(prompt, stdin)) != NULL)
     {
 	init_pipeline(line);
+	print_pipeline();
 
 	for (i = 0; i < pipeline_size; ++i)
 	{
-	    cmd = pipeline[i].cmd;
-            if ((pipeline[i].arglist = splitline(cmd)) != NULL)
-	    {
-	         result = process(pipeline[i].arglist);
-	         //freelist(arglist);
-	    }
+	     result = process(pipeline[i].arglist);
 	}
 	free(line);
     }
@@ -99,29 +95,34 @@ void init_pipeline(char *line)
     char    *cmd;
 
     pipeline_size = 0;
-
-    /* copy the line and work on the copy */
-    line_to_split = newstr(line, strlen(line));
+    line_to_split = line;
 
     cmd = strtok(line_to_split, "|");
     while (cmd != NULL)
     {
-	/* first time?      */
+	/* first time? */
 	if (pipeline == NULL)
 	{
 	    pipeline = emalloc(sizeof(command));
-	    ++pipeline_capacity;
-	}
+            pipeline[pipeline_size].arglist = NULL;
 
+            ++pipeline_capacity;
+	}
+	
 	/* need more space? (add 1 each time because pipeline is not so long) */
 	else if (pipeline_size == pipeline_capacity)
 	{
 	    pipeline = realloc(pipeline, (pipeline_size + 1) * sizeof(command));
+	    pipeline[pipeline_size].arglist = NULL;
+	    
 	    ++pipeline_capacity;
 	}
-
-	pipeline[pipeline_size].cmd = cmd;
-	pipeline[pipeline_size].arglist = NULL;
+	
+        /* init the new arglist */
+	if (pipeline[pipeline_size].arglist != NULL)
+	    freelist(pipeline[pipeline_size].arglist);
+	pipeline[pipeline_size].arglist = splitline(cmd);
+	
 	++pipeline_size;
 
 	cmd = strtok(NULL, "|");
@@ -138,7 +139,12 @@ void init_pipeline(char *line)
 void print_pipeline()
 {
     for (int i =0; i < pipeline_size; ++i)
-	printf("command[%d]: %s\n" ,i, pipeline[i].cmd);
+    {
+	printf("command[%d]: ", i);
+	for (int j = 0; pipeline[i].arglist[j]; ++j)
+	    printf("%s ", pipeline[i].arglist[j]);
+	printf("\n");
+    }
 
     printf("capacity: %d, size: %d\n", pipeline_capacity, pipeline_size);
 }

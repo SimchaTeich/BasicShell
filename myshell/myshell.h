@@ -5,8 +5,7 @@
 
 typedef struct command
 {
-    char  *cmd;           /* command before split */
-    char **arglist;       /* command after splir  */
+    char **arglist;       /* command after split  */
     int    pipe[2];       /* the right pipe       */
 } command;
 
