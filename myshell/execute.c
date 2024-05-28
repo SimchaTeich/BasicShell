@@ -13,9 +13,12 @@
 
 
 /*
- * purpose: run a program passing it arguments
- * returns: status returned via wait, or -1 on error
- *  errors: -1 on fork() or wait() errors
+ * purpose: run a program.
+ * details: using global struct command array,
+ *          and global curr-command-index
+ *          to run. results saving at the correct
+ *          fields in the correct index of the
+ *          command array. also, update global last_result.
  * */
 void execute()
 {
@@ -25,7 +28,7 @@ void execute()
     extern int       pipeline_size;
     char           **argv       = pipeline[cmdno].arglist;
 
-    if (argv[0] == NULL)                /* nothing succeeds */
+    if (argv[0] == NULL)
         return;
 
     /* create the right pipe for command, except the last.. */
@@ -35,6 +38,7 @@ void execute()
     if ((pid = fork()) == -1)
     {
         perror("fork");
+	exit(1);
     }
     else if (pid == 0)
     {
@@ -54,11 +58,15 @@ void execute()
 	    close(pipeline[cmdno].pipe[1]);
 	}
 
-
+        /* update environ with new non-global variables*/
         extern char **environ;
         environ = VLtable2environ();
+
+	/* enable signals */
         signal(SIGINT, SIG_DFL);
         signal(SIGQUIT, SIG_DFL);
+
+	/* and.. Go!      */
         execvp(argv[0], argv);
         perror("cannot execute commands");
         exit(1);
@@ -86,7 +94,5 @@ void execute()
 	    last_result = pipeline[cmdno].result;
 	}
     }
-
-   // return 0;
 }
 

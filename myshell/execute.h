@@ -4,9 +4,11 @@
 
 
 /*
- * purpose: run a program passing it arguments
- * returns: status returned via wait, or -1 on error
- *  errors: -1 on fork() or wait() errors
+ * purpose: run a program.
+ * details: using global struct command array,
+ *          and global curr-command-index
+ *          to run. results saving at the correct
+ *          fields in the correct index of the
+ *          command array. also, update global last_result.
  * */
-//int execute(char *argv[]);
 void execute();
