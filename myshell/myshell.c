@@ -61,6 +61,7 @@ int main()
 	free_pipeline();
     }
 
+    free_pipeline();
     return 0;
 }
 
