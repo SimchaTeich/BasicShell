@@ -34,7 +34,7 @@ int       pipeline_size       = 0;           /* number of commands in current pi
                                              /* Remember: size <= capacity             */
 int       cmdno               = 0;           /* current command index to run           */
                                              /* Remember: cmdno < size <= capasity     */
-int       last_result     = 0;               /* after each execute its get update      */
+int       last_result         = 0;           /* after each execute its get update      */
 char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign       */
 
 
