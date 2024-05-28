@@ -28,24 +28,22 @@ void    free_pipeline();
  
 
 /* details of pipeline are globals */
-command * pipeline            = NULL;        /* contains the commands in pipeline               */
-int       pipeline_capacity   = 0;           /* number of total room in pipeline                */
-int       pipeline_size       = 0;           /* number of commands in current pipeline          */
-                                             /* Remember: size <= capacity                      */
-int       cmdno               = 0;           /* current command index to run                    */
-                                             /* Remember: cmdno < size <= capasity              */
-int       last_result     = 0;               /* after each execute its get update               */
-char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign                */
+command * pipeline            = NULL;        /* contains the commands in pipeline      */
+int       pipeline_capacity   = 0;           /* number of total room in pipeline       */
+int       pipeline_size       = 0;           /* number of commands in current pipeline */
+                                             /* Remember: size <= capacity             */
+int       cmdno               = 0;           /* current command index to run           */
+                                             /* Remember: cmdno < size <= capasity     */
+int       last_result     = 0;               /* after each execute its get update      */
+char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign       */
 
 
 
 int main()
 {
-    char    * line;       /* contains the current raw input       */
-    char    * cmd;        /* a command input inside line          */
+    char *line;       /* contains the current raw input */
 
     setup();
-    
 
     while ((line = next_cmd(prompt, stdin)) != NULL)
     {
@@ -89,6 +87,12 @@ void fatal(char *s1, char *s2, int n)
 
 
 
+/*********************/
+/* helper functions  */
+/*********************/
+
+
+
 /*
  * purpose: break raw input to commands between pipe '|'
  * details: using strtok to divide the line.
@@ -99,13 +103,11 @@ void fatal(char *s1, char *s2, int n)
  * */
 void init_pipeline(char *line)
 {
-    char    *line_to_split;
     char    *cmd;
 
     pipeline_size = 0;
-    line_to_split = line;
 
-    cmd = strtok(line_to_split, "|");
+    cmd = strtok(line, "|");
     while (cmd != NULL)
     {
 	/* first time? */
@@ -165,13 +167,9 @@ void free_pipeline()
 
     pipeline_capacity = 0;
     pipeline_size     = 0;
+    cmdno             = 0;
 }
 
-
-
-/*********************/
-/* helper functions  */
-/*********************/
 
 
 void print_pipeline()
