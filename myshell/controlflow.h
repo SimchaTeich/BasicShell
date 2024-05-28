@@ -36,5 +36,3 @@ int is_control_command(char *s);
  * */
 int do_control_command(char **args);
 
-
-

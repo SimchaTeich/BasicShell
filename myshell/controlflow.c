@@ -75,10 +75,9 @@ int do_control_command(char **args)
 	else
 	{
 	    delete_if_word(cmd); 
-	    //rv = process();
-	    rv = 0;
 	    process();
 	    if_state   = WANT_THEN;
+	    rv         = 0;
 	}
     }
     else if (strcmp(cmd, "then") == 0)
