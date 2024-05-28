@@ -36,7 +36,7 @@ int main()
 {
     char    * line;       /* contains the current raw input       */
     char    * cmd;        /* a command input inside line          */
-    char   ** arglist;    /* every commnad split to argument list */
+    int       i;          /* index to current command in pipeline */
     int       result;
 
     setup();
@@ -46,11 +46,15 @@ int main()
     {
 	init_pipeline(line);
 
-       // if ((arglist = splitline(cmd)) != NULL)
-	//{
-	    //result = process(arglist);
-	    //freelist(arglist);
-	//}
+	for (i = 0; i < pipeline_size; ++i)
+	{
+	    cmd = pipeline[i].cmd;
+            if ((pipeline[i].arglist = splitline(cmd)) != NULL)
+	    {
+	         result = process(pipeline[i].arglist);
+	         //freelist(arglist);
+	    }
+	}
 	free(line);
     }
 
@@ -138,5 +142,4 @@ void print_pipeline()
 
     printf("capacity: %d, size: %d\n", pipeline_capacity, pipeline_size);
 }
-
 
