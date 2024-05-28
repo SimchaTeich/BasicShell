@@ -19,7 +19,7 @@
 /********************/
 void    setup();
 void    init_pipeline(char *line);
-//void    free_pipeline();
+void    free_pipeline();
 void print_pipeline();
 
 
@@ -52,6 +52,7 @@ int main()
 	     result = process(pipeline[i].arglist);
 	}
 	free(line);
+	free_pipeline();
     }
 
     return 0;
@@ -83,9 +84,9 @@ void fatal(char *s1, char *s2, int n)
 
 /*
  * purpose: break raw input to commands between pipe '|'
- * details: duplicate the line, and using strtok to
- *          divide the line. allocate command array
- *          to save the plited comands. if needed.
+ * details: using strtok to divide the line.
+ *          allocate command array to save
+ *          the splited comands. if needed.
  *    note: line allways not NULL
  *  return: none. (command array is gloabl)
  * */
@@ -127,6 +128,33 @@ void init_pipeline(char *line)
 
 	cmd = strtok(NULL, "|");
     }
+}
+
+
+
+/*
+ * purpose: free all commands in the pipeline
+ *          and the pipeline itself.
+ * */
+void free_pipeline()
+{
+    int i;
+
+    for (i = 0; i < pipeline_capacity; ++i)
+    {
+	if (pipeline[i].arglist != NULL)
+	{
+            freelist(pipeline[i].arglist);
+	    pipeline[i].arglist = NULL;
+	}
+    }
+
+
+    free(pipeline);
+    pipeline = NULL;
+
+    pipeline_capacity = 0;
+    pipeline_size     = 0;
 }
 
 
