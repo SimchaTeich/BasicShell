@@ -40,3 +40,11 @@ void       freelist(char **list);
 void     * emalloc(size_t n);
 void     * erealloc(void *p, size_t n);
 
+
+
+/*
+ * purpose: constructor for strings
+ * returns: a string, never NULL
+ * */
+char * newstr(char *s, int l);
+

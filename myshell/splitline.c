@@ -10,13 +10,6 @@
 
 
 
-/********************/
-/* helper function  */
-/********************/
-char * newstr(char *s, int l);
-
-
-
 /*
  * purpose: read next command line from fp
  * returns: dynamiclly allocated string holding command line
@@ -160,12 +153,6 @@ void * erealloc(void *p, size_t n)
 
     return rv;
 }
-
-
-
-/*****************************************/
-/*           helper functions            */
-/*****************************************/
 
 
 

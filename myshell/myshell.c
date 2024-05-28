@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <signal.h>
+#include <string.h>
+#include "myshell.h"
 #include "splitline.h"
 #include "process.h"
 #include "varlib.h"
@@ -15,26 +17,41 @@
 /********************/
 /* helper functions */
 /********************/
-void setup();
+void    setup();
+void    init_pipeline(char *line);
+//void    free_pipeline();
+//void print_pipeline();
+
+
+/* commands in pipeline are globals */
+command * pipeline            = NULL;        /* contains the commands in pipeline      */
+int       pipeline_capacity   = 0;           /* number of total room in pipeline       */
+int       pipeline_size       = 0;           /* number of commands in current pipeline */
+                                             /* Remember: size <= capacity             */
+char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign       */
 
 
 
 int main()
 {
-    char *cmdline, *prompt, **arglist;
-    int   result;
+    char    * line;       /* contains the current raw input       */
+    char    * cmd;        /* a command input inside line          */
+    char   ** arglist;    /* every commnad split to argument list */
+    int       result;
 
-    prompt = DFL_PROMPT;
     setup();
+    
 
-    while ((cmdline = next_cmd(prompt, stdin)) != NULL)
+    while ((line = next_cmd(prompt, stdin)) != NULL)
     {
-        if ((arglist = splitline(cmdline)) != NULL)
-	{
-	    result = process(arglist);
-	    freelist(arglist);
-	}
-	free(cmdline);
+	init_pipeline(line);
+
+       // if ((arglist = splitline(cmd)) != NULL)
+	//{
+	    //result = process(arglist);
+	    //freelist(arglist);
+	//}
+	free(line);
     }
 
     return 0;
@@ -61,4 +78,65 @@ void fatal(char *s1, char *s2, int n)
     fprintf(stderr, "Error: %s, %s\n", s1, s2);
     exit(n);
 }
+
+
+
+/*
+ * purpose: break raw input to commands between pipe '|'
+ * details: duplicate the line, and using strtok to
+ *          divide the line. allocate command array
+ *          to save the plited comands. if needed.
+ *    note: line allways not NULL
+ *  return: none. (command array is gloabl)
+ * */
+void init_pipeline(char *line)
+{
+    char    *line_to_split;
+    char    *cmd;
+
+    pipeline_size = 0;
+
+    /* copy the line and work on the copy */
+    line_to_split = newstr(line, strlen(line));
+
+    cmd = strtok(line_to_split, "|");
+    while (cmd != NULL)
+    {
+	/* first time?      */
+	if (pipeline == NULL)
+	{
+	    pipeline = emalloc(sizeof(command));
+	    ++pipeline_capacity;
+	}
+
+	/* need more space? (add 1 each time because pipeline is not so long) */
+	else if (pipeline_size == pipeline_capacity)
+	{
+	    pipeline = realloc(pipeline, (pipeline_size + 1) * sizeof(command));
+	    ++pipeline_capacity;
+	}
+
+	pipeline[pipeline_size].cmd = cmd;
+	pipeline[pipeline_size].arglist = NULL;
+	++pipeline_size;
+
+	cmd = strtok(NULL, "|");
+    }
+}
+
+
+
+/*********************/
+/* helper functions  */
+/*********************/
+
+
+void print_pipeline()
+{
+    for (int i =0; i < pipeline_size; ++i)
+	printf("command[%d]: %s\n" ,i, pipeline[i].cmd);
+
+    printf("capacity: %d, size: %d\n", pipeline_capacity, pipeline_size);
+}
+
 
