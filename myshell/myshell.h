@@ -1,3 +1,5 @@
+#define _MYSHELL_H_
+
 #define YES           1
 #define NO            0
 #define PIPE_READ     0
@@ -7,6 +9,8 @@ typedef struct command
 {
     char **arglist;       /* command after split  */
     int    pipe[2];       /* the right pipe       */
+    int    pid;
+    int    result;
 } command;
 
 

@@ -2,8 +2,11 @@
 #include "controlflow.h"
 #include "builtin.h"
 #include "execute.h"
+#include "process.h"
 
-
+#ifndef _MYSHELL_H_
+    #include "myshell.h"
+#endif
 
 /*
  * purpose: process user command
@@ -12,24 +15,28 @@
  *          if not execute()
  *  errors: arise from subroutines, handles there
  * */
-int process(char **args)
+void process()
 {
-    int rv = 0;
+    extern command *pipeline;
+    extern int      cmdno;
+    char          **args    = pipeline[cmdno].arglist;
+    int             rv      = 0;
 
     if (args[0] == NULL)
     {
-	rv = 0;
+        rv = 0;
     }
     else if (is_control_command(args[0]))
     {
-	rv = do_control_command(args);
+        rv = do_control_command(args);
     }
     else if (ok_to_execute())
     {
-	if (!builtin_command(args, &rv))
-	    rv = execute(args);
+        if (!builtin_command(args, &rv))
+            //rv = execute();
+	    execute();
     }
 
-    return rv;
+    //return rv;
 }
 

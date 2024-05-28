@@ -1,8 +1,12 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include "process.h"
 #include "controlflow.h"
-#include "myshell.h"
+
+#ifndef _MYSHELL_H_
+    #include "myshell.h"
+#endif
 
 
 
@@ -10,7 +14,7 @@
 /* helper functions  */
 /*********************/
 int syn_err(char *msg);
-
+void delete_if_word(char *cmd);
 
 
 /*
@@ -22,16 +26,18 @@ int syn_err(char *msg);
  * */
 int ok_to_execute()
 {
-    int rv = 1;                 /* default is positive  */
+    extern int cmdno;
+    extern int last_result;
+    int        rv = 1;                       /* default is positive  */
 
-    if (if_state == WANT_THEN)
+    if (if_state == WANT_THEN && cmdno == 0) /* if cmdno > 0, its inside pipeline.. */
     {
         syn_err("then expected");
 	rv = 0;
     }
-    else if (if_state == THEN_BLOCK && if_result == SUCCESS)
+    else if (if_state == THEN_BLOCK && last_result == SUCCESS)
 	rv = 1;
-    else if (if_state == THEN_BLOCK && if_result == FAIL)
+    else if (if_state == THEN_BLOCK && last_result != SUCCESS)
 	rv = 0;
 
     return rv;
@@ -68,10 +74,11 @@ int do_control_command(char **args)
             rv = syn_err("if unexpected");
 	else
 	{
-	    last_state = process(args+1);
-	    if_result  = (last_state == 0 ? SUCCESS : FAIL);
+	    delete_if_word(cmd); 
+	    //rv = process();
+	    rv = 0;
+	    process();
 	    if_state   = WANT_THEN;
-	    rv         = 0;
 	}
     }
     else if (strcmp(cmd, "then") == 0)
@@ -119,4 +126,26 @@ int syn_err(char *msg)
     fprintf(stderr, "syntax error: %s\n", msg);
     return -1;
 }
+
+
+
+/*
+ * purpose: delete the word 'if' from the command
+ * details: move every string left in the arglist
+ *          of pipeline[cmdno].
+ *          then, free the "if" string.
+ * */
+void delete_if_word(char *cmd)
+{
+    extern command *pipeline;
+    extern int       cmdno;
+    int j;
+    
+    for (j = 1; pipeline[cmdno].arglist[j]; ++j)
+        pipeline[cmdno].arglist[j-1] = pipeline[cmdno].arglist[j];
+    pipeline[cmdno].arglist[j-1] = NULL;
+    
+    free(cmd);
+}
+
 

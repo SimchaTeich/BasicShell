@@ -3,11 +3,10 @@
  */
 
 
-
 /*
  * purpose: run a program passing it arguments
  * returns: status returned via wait, or -1 on error
  *  errors: -1 on fork() or wait() errors
  * */
-int execute(char *argv[]);
-
+//int execute(char *argv[]);
+void execute();

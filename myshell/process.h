@@ -3,7 +3,6 @@
  */
 
 
-
 /*
  * purpose: process user command
  * returns: result of processing command
@@ -11,5 +10,5 @@
  *          if not execute()
  *  errors: arise from subroutines, handles there
  * */
-int process(char **args);
-
+//int process(char **args);
+void process();

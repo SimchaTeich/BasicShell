@@ -3,7 +3,11 @@
 #include <unistd.h>
 #include <signal.h>
 #include <string.h>
-#include "myshell.h"
+
+#ifndef _MYSHELL_H_
+    #include "myshell.h"
+#endif
+
 #include "splitline.h"
 #include "process.h"
 #include "varlib.h"
@@ -20,15 +24,18 @@
 void    setup();
 void    init_pipeline(char *line);
 void    free_pipeline();
-void print_pipeline();
+//void print_pipeline();
+ 
 
-
-/* commands in pipeline are globals */
-command * pipeline            = NULL;        /* contains the commands in pipeline      */
-int       pipeline_capacity   = 0;           /* number of total room in pipeline       */
-int       pipeline_size       = 0;           /* number of commands in current pipeline */
-                                             /* Remember: size <= capacity             */
-char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign       */
+/* details of pipeline are globals */
+command * pipeline            = NULL;        /* contains the commands in pipeline               */
+int       pipeline_capacity   = 0;           /* number of total room in pipeline                */
+int       pipeline_size       = 0;           /* number of commands in current pipeline          */
+                                             /* Remember: size <= capacity                      */
+int       cmdno               = 0;           /* current command index to run                    */
+                                             /* Remember: cmdno < size <= capasity              */
+int       last_result     = 0;               /* after each execute its get update               */
+char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign                */
 
 
 
@@ -36,8 +43,6 @@ int main()
 {
     char    * line;       /* contains the current raw input       */
     char    * cmd;        /* a command input inside line          */
-    int       i;          /* index to current command in pipeline */
-    int       result;
 
     setup();
     
@@ -45,12 +50,13 @@ int main()
     while ((line = next_cmd(prompt, stdin)) != NULL)
     {
 	init_pipeline(line);
-	print_pipeline();
 
-	for (i = 0; i < pipeline_size; ++i)
+	for (cmdno = 0; cmdno < pipeline_size; ++cmdno)
 	{
-	     result = process(pipeline[i].arglist);
+	    process();
 	}
+	//print_pipeline();
+	//printf("last_result: %d\n", last_result);
 	free(line);
 	free_pipeline();
     }
@@ -106,6 +112,8 @@ void init_pipeline(char *line)
 	{
 	    pipeline = emalloc(sizeof(command));
             pipeline[pipeline_size].arglist = NULL;
+	    pipeline[pipeline_size].pid = -1;
+            pipeline[pipeline_size].result = 0;
 
             ++pipeline_capacity;
 	}
@@ -115,6 +123,8 @@ void init_pipeline(char *line)
 	{
 	    pipeline = realloc(pipeline, (pipeline_size + 1) * sizeof(command));
 	    pipeline[pipeline_size].arglist = NULL;
+	    pipeline[pipeline_size].pid = -1;
+            pipeline[pipeline_size].result = 0;
 	    
 	    ++pipeline_capacity;
 	}
@@ -149,7 +159,6 @@ void free_pipeline()
 	}
     }
 
-
     free(pipeline);
     pipeline = NULL;
 
@@ -171,7 +180,8 @@ void print_pipeline()
 	printf("command[%d]: ", i);
 	for (int j = 0; pipeline[i].arglist[j]; ++j)
 	    printf("%s ", pipeline[i].arglist[j]);
-	printf("\n");
+	printf(" (pid: %d, result: %d)\n", pipeline[i].pid, pipeline[i].result);
+
     }
 
     printf("capacity: %d, size: %d\n", pipeline_capacity, pipeline_size);
