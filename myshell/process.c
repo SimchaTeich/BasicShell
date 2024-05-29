@@ -11,10 +11,13 @@
 #endif
 
 
+
 /********************/
 /* helper functions */
 /********************/
-int is_amprsnd_at_the_end(char **args);
+int ampersand_exist(char **args);
+int redirect_out_exist(char **args);
+
 
 
 /*
@@ -35,10 +38,18 @@ void process()
 
     /* if '&' at the end, cmd */
     /* will run in backgorund */
-    if (is_amprsnd_at_the_end(args))
+    if (ampersand_exist(args))
     {
 	extern int dont_wait;
 	dont_wait = 1;
+    }
+
+    /* if '>' at the end, cmd will */
+    /* redirect output to a file   */
+    if (redirect_out_exist(args))
+    {
+        extern int redirect_out;
+	redirect_out = 1;
     }
 
     /* check for changing state for if-statement */
@@ -54,15 +65,21 @@ void process()
 
 
 
+/********************/
+/* helper functions */
+/********************/
+
+
+
 /*
- * purpose: return 1 find '&' at the last string.
+ * purpose: return 1 if last string is "&".
  *          else return 0.
  * details: free '&' string.
  * */
-int is_amprsnd_at_the_end(char **args)
+int ampersand_exist(char **args)
 {
-    int i;
-    int rv = 0;
+    int   i;
+    int   rv = 0;
     char *ampersand;
 
     /* find NULL index */
@@ -74,6 +91,39 @@ int is_amprsnd_at_the_end(char **args)
         ampersand = args[i-1];
 	args[i-1] = NULL;
 	free(ampersand);
+
+	rv = 1;
+    }
+
+    return rv;
+}
+
+
+
+/*
+ * purpose: return 1 if tow last strings are
+ *          ">" and some "filename". else 0.
+ * details:  free ">" stirng. "filename"
+ *           insert to a global and free later.
+ * */
+int redirect_out_exist(char **args)
+{
+    int           i;
+    int           rv = 0;
+    char        * redirect_sign;
+    extern char * redirect_filename;
+
+    /* find NULL index */
+    for (i = 0; args[i]; ++i)
+        ;
+    
+    printf("NULL at %d\n", i);
+    if (i > 2 && strcmp(args[i-2], ">") == 0)
+    {
+        redirect_sign     = args[i-2];
+	redirect_filename = args[i-1]; /* will free later on main() */
+	args[i-2] = NULL;
+	free(redirect_sign);
 
 	rv = 1;
     }

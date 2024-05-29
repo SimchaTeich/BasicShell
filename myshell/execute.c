@@ -4,6 +4,8 @@
 #include <signal.h>
 #include <sys/wait.h>
 #include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
 #include "varlib.h"
 
 #ifndef _MYSHELL_H_
@@ -34,7 +36,10 @@ void execute()
     extern int       cmdno;
     extern int       pipeline_size;
     extern int       dont_wait;
-    char           **argv       = pipeline[cmdno].arglist;
+    extern int       redirect_out;
+    extern char    * redirect_filename;
+    int              redirect_out_fd;
+    char          ** argv       = pipeline[cmdno].arglist;
 
     if (argv[0] == NULL)
         return;
@@ -73,6 +78,14 @@ void execute()
 	    close(pipeline[cmdno].pipe[0]);
 	    dup2(pipeline[cmdno].pipe[1], 1);
 	    close(pipeline[cmdno].pipe[1]);
+	}
+
+	/* redirect out */
+	if (redirect_out)
+	{
+	    close(1);
+	    if(creat(redirect_filename, 0660) == -1)
+		perror("creat");
 	}
 
         /* update environ with new non-global variables*/
