@@ -117,7 +117,6 @@ int redirect_out_exist(char **args)
     for (i = 0; args[i]; ++i)
         ;
     
-    printf("NULL at %d\n", i);
     if (i > 2 && strcmp(args[i-2], ">") == 0)
     {
         redirect_sign     = args[i-2];
