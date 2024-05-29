@@ -140,7 +140,6 @@ void execute()
  * */
 void sigchld_handler(int sig)
 {
-    printf("HANDLER\n");
     /* NULL because cant update result, */
     /* maybe the array was free..       */
     waitpid(pid, NULL, 0);
