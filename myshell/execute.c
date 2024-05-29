@@ -11,6 +11,14 @@
 #endif
 
 
+/*******************/
+/* helper functios */
+/*******************/
+void sigchld_handler(int sig);
+
+
+static pid_t pid;
+
 
 /*
  * purpose: run a program.
@@ -22,14 +30,23 @@
  * */
 void execute()
 {
-    pid_t            pid;
     extern command * pipeline;
     extern int       cmdno;
     extern int       pipeline_size;
+    extern int       dont_wait;
     char           **argv       = pipeline[cmdno].arglist;
 
     if (argv[0] == NULL)
         return;
+
+
+    /* if we don't wait for the command, */
+    /* we want to avoid zombies          */
+    if (dont_wait || cmdno != pipeline_size-1)
+	signal(SIGCHLD, sigchld_handler);
+    else
+	signal(SIGCHLD, SIG_DFL);
+
 
     /* create the right pipe for command, except the last.. */
     if (cmdno < pipeline_size)
@@ -51,7 +68,7 @@ void execute()
 	}
 	
 	/* not the last command  */
-	if (cmdno < pipeline_size - 1)
+	if (cmdno < pipeline_size-1)
 	{
 	    close(pipeline[cmdno].pipe[0]);
 	    dup2(pipeline[cmdno].pipe[1], 1);
@@ -62,9 +79,14 @@ void execute()
         extern char **environ;
         environ = VLtable2environ();
 
-	/* enable signals */
-        signal(SIGINT, SIG_DFL);
-        signal(SIGQUIT, SIG_DFL);
+	/* enable signals. but if we dont wait,  */
+	/* we have to stay this signals ignored  */
+	/* as the shell itself.                  */
+	if (!dont_wait)
+	{
+            signal(SIGINT, SIG_DFL);
+            signal(SIGQUIT, SIG_DFL);
+	}
 
 	/* and.. Go!      */
         execvp(argv[0], argv);
@@ -83,16 +105,44 @@ void execute()
 	}
 
 	/* the last command      */
-	if (cmdno == pipeline_size - 1)
+	if (cmdno == pipeline_size-1)
 	{
+	    if (dont_wait)
+		return;
+
 	    /* wait for all, and save results */ 
 	    for (int i = 0; i < pipeline_size; ++i)
-		waitpid(pipeline[cmdno].pid, &pipeline[cmdno].result, 0);
+		waitpid(pipeline[i].pid, &pipeline[i].result, 0);
 
 	    /* the last result is the result of the pipeline (or only one command..) */
 	    extern int last_result;
 	    last_result = pipeline[cmdno].result;
+
+	    /* clean zombies if exists. */
+	    if (!dont_wait)
+	        while (wait(NULL) != -1)
+	            ;
 	}
     }
+}
+
+
+
+/**********************/
+/*  helper functions  */
+/**********************/
+
+
+
+/*
+ * purpose: waiting AFTER command finished,
+ *          to prevent zomnies.
+ * */
+void sigchld_handler(int sig)
+{
+    printf("HANDLER\n");
+    /* NULL because cant update result, */
+    /* maybe the array was free..       */
+    waitpid(pid, NULL, 0);
 }
 

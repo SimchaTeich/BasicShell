@@ -25,6 +25,7 @@ int builtin_command(char **args)
 {
     int rv = 0;
 
+    /* about variables */
     if (strcmp(args[0], "set") == 0)                /* 'set' command? */
     {
         VLlist();

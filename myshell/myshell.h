@@ -7,10 +7,11 @@
 
 typedef struct command
 {
-    char **arglist;       /* command after split  */
-    int    pipe[2];       /* the right pipe       */
-    int    pid;
-    int    result;
+    char **arglist;          /* command after split     */
+    int    pipe[2];          /* the right pipe          */
+    int    pid;              /* pid of process run it   */
+    int    result;           /* result from process     */
+
 } command;
 
 

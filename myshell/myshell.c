@@ -27,15 +27,19 @@ void    free_pipeline();
 //void print_pipeline();
  
 
-/* details of pipeline are globals */
-command * pipeline            = NULL;        /* contains the commands in pipeline      */
-int       pipeline_capacity   = 0;           /* number of total room in pipeline       */
-int       pipeline_size       = 0;           /* number of commands in current pipeline */
-                                             /* Remember: size <= capacity             */
-int       cmdno               = 0;           /* current command index to run           */
-                                             /* Remember: cmdno < size <= capasity     */
-int       last_result         = 0;           /* after each execute its get update      */
-char    * prompt              = DFL_PROMPT;  /* contains the current prompt sign       */
+/* details of pipeline are globals      */
+command * pipeline          = NULL;        /* contains the commands in pipeline      */
+int       pipeline_capacity = 0;           /* number of total room in pipeline       */
+int       pipeline_size     = 0;           /* number of commands in current pipeline */
+                                           /* Remember: size <= capacity             */
+int       cmdno             = 0;           /* current command index to run           */
+                                           /* Remember: cmdno < size <= capasity     */
+
+
+/* parameters for shell are globals too */
+char    * prompt            = DFL_PROMPT;  /* contains the current prompt sign       */
+int       last_result       = 0;           /* after each execute its get update      */
+int       dont_wait         = 0;           /* 1 if '&' at the end of line. 0 for no  */
 
 
 
@@ -57,6 +61,7 @@ int main()
 	//printf("last_result: %d\n", last_result);
 	free(line);
 	free_pipeline();
+	dont_wait = 0;
     }
 
     free_pipeline();
