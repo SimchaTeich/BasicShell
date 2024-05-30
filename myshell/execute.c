@@ -37,6 +37,7 @@ void execute()
     extern int       pipeline_size;
     extern int       dont_wait;
     extern int       redirect_out;
+    extern int       redirect_err;
     extern char    * redirect_filename;
     int              redirect_out_fd;
     char          ** argv       = pipeline[cmdno].arglist;
@@ -79,12 +80,19 @@ void execute()
 	    dup2(pipeline[cmdno].pipe[1], 1);
 	    close(pipeline[cmdno].pipe[1]);
 	}
-
-	/* redirect out */
-	if (redirect_out)
+	/* redirect stdout */
+	else if (redirect_out)
 	{
 	    close(1);
 	    if(creat(redirect_filename, 0660) == -1)
+		perror("creat");
+	}
+
+	/* rediret stderr */
+	if (redirect_err)
+	{
+	    close(2);
+	    if (creat(redirect_filename, 0660) == -1)
 		perror("creat");
 	}
 
