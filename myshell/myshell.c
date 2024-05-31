@@ -45,7 +45,7 @@ int       redirect_out      = 0;           /* 1 if '>' at the end of line. 0 for
 int       redirect_outa     = 0;           /* redirect out-append. sign is '>>'      */
 int       redirect_err      = 0;           /* 1 if '2>' at the end of line. 0 for no */
 char    * redirect_filename = NULL;        /* target filename to be directend        */
-
+int       quit              = 0;           /* close the shell whene quit == 1        */
 
 
 int main()
@@ -61,6 +61,8 @@ int main()
 	for (cmdno = 0; cmdno < pipeline_size; ++cmdno)
 	{
 	    process();
+	    if (quit)
+		break;
 	}
 	//print_pipeline();
 	//printf("last_result: %d\n", last_result);
@@ -73,6 +75,9 @@ int main()
 	if (redirect_filename != NULL)
 	    free(redirect_filename);
 	redirect_filename = NULL;
+
+	if (quit)
+	    break;
     }
 
     free_pipeline();

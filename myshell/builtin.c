@@ -75,6 +75,18 @@ int builtin_command(char **args)
 	rv = 1;
     }
 
+    /* or quit */
+    else if (strcmp(args[0], "quit") == 0)
+    {
+        if (args[1] == NULL)
+	{
+	    extern int quit;
+	    quit = 1;
+	}
+
+	rv = 1;
+    }
+
     return rv;
 }
 
