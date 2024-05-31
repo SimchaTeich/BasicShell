@@ -14,7 +14,7 @@
 
 
 
-#define DFL_PROMPT "> "
+#define DFL_PROMPT "hello: "
 
 
 
@@ -37,7 +37,7 @@ int       cmdno             = 0;           /* current command index to run      
 
 
 /* parameters for shell are globals too */
-char    * prompt            = DFL_PROMPT;  /* contains the current prompt sign       */
+char    * prompt            = NULL;        /* contains the current prompt sign       */
 int       last_result       = 0;           /* after each execute its get update      */
 int       dont_wait         = 0;           /* 1 if '&' at the end of line. 0 for no  */
 int       redirect_out      = 0;           /* 1 if '>' at the end of line. 0 for no  */
@@ -75,6 +75,7 @@ int main()
     }
 
     free_pipeline();
+    free(prompt);
     return 0;
 }
 
@@ -88,6 +89,9 @@ void setup()
 {
     extern char **environ;
     VLenviron2table(environ);
+
+    prompt = newstr(DFL_PROMPT, strlen(DFL_PROMPT));
+
     signal(SIGINT, SIG_IGN);
     signal(SIGQUIT, SIG_IGN);
 }
