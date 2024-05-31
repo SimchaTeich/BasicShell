@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <stdlib.h>
+#include <unistd.h>
 #include "splitline.h"
 #include "varlib.h"
 
@@ -46,8 +47,8 @@ int builtin_command(char **args)
 	rv = 1;
     }
 
-    /* change the prompt sign? */
-    else if(strcmp(args[0], "prompt") == 0)
+    /* or change the prompt sign?  */
+    else if (strcmp(args[0], "prompt") == 0)
     {
         if (strcmp(args[1], "=") == 0 &&
 	    args[2] != NULL           &&
@@ -57,9 +58,21 @@ int builtin_command(char **args)
 	    free(prompt);
 	    prompt = newstr(args[2], strlen(args[2])+1); /* +1 for ' ' */
 	    prompt[strlen(args[2])] = ' ';
-
-	    rv = 1;
 	}
+
+	rv = 1;
+    }
+
+    /* or change current directory? */
+    else if (strcmp(args[0], "cd") == 0)
+    {
+        if (args[1] != NULL &&
+            args[2] == NULL   )
+	{
+	    chdir(args[1]);
+	}
+
+	rv = 1;
     }
 
     return rv;

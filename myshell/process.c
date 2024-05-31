@@ -64,6 +64,7 @@ void process()
         extern int redirect_err;
 	redirect_err = 1;
     }
+    
 
     /* check for changing state for if-statement */
     if (is_control_command(args[0]))
@@ -72,7 +73,9 @@ void process()
     else if (ok_to_execute())
     {
         if (!builtin_command(args))
+	{
 	    execute();
+	}
     }
 }
 
