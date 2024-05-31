@@ -24,6 +24,7 @@
 void    setup();
 void    init_pipeline(char *line);
 void    free_pipeline();
+void    sigint_handler(int sig);
 //void print_pipeline();
  
 
@@ -92,7 +93,7 @@ void setup()
 
     prompt = newstr(DFL_PROMPT, strlen(DFL_PROMPT));
 
-    signal(SIGINT, SIG_IGN);
+    signal(SIGINT, sigint_handler);
     signal(SIGQUIT, SIG_IGN);
 }
 
@@ -189,6 +190,11 @@ void free_pipeline()
     cmdno             = 0;
 }
 
+
+void sigint_handler(int sig)
+{
+    printf("You typed control-C!");
+}
 
 
 void print_pipeline()
