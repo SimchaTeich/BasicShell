@@ -5,6 +5,8 @@
 #include "builtin.h"
 #include "execute.h"
 #include "process.h"
+#include "varlib.h"
+#include "splitline.h"
 
 #ifndef _MYSHELL_H_
     #include "myshell.h"
@@ -15,10 +17,11 @@
 /********************/
 /* helper functions */
 /********************/
-int ampersand_exist(char **args);
-int redirect_out_exist(char **args);
-int redirect_outa_exist(char **args);
-int redirect_err_exist(char **args);
+int  ampersand_exist(char **args);
+int  redirect_out_exist(char **args);
+int  redirect_outa_exist(char **args);
+int  redirect_err_exist(char **args);
+void replace_dolars(char **args);
 
 
 /*
@@ -72,6 +75,8 @@ void process()
     
     else if (ok_to_execute())
     {
+	replace_dolars(args);
+
         if (!builtin_command(args))
 	{
 	    execute();
@@ -208,5 +213,44 @@ int redirect_err_exist(char **args)
     }
 
     return rv;
+}
+
+
+/*
+ * purpose: repalce every "$var" in args
+ *          with the correct "val", when
+ *          $var=val. if "$?", replace it
+ *          with the last command result.
+ * details: using varlib.h
+ * */
+void replace_dolars(char **args)
+{
+    int   i;
+    char *arg;
+    char *var;
+
+
+    for (i = 1; args[i]; ++i) /* never replace the first (very stupid, but OK for my H.M...) */
+    {
+	if (args[i][0] == '$')
+	{
+	    if (strcmp(args[i], "$?") == 0)
+	    {
+	        extern int last_result;
+                free(args[i]);
+		args[i] = emalloc(5);
+		sprintf(args[i], "%d", last_result);
+		continue;
+	    }
+
+            var = VLlookup(args[i]+1);                    /* +1 because name start after the "$" */
+	    if (strcmp(var, "") != 0)
+	    {
+		arg = args[i];
+	        args[i] = newstr(var, strlen(var));
+		free(arg);
+	    }
+        }
+    }
 }
 

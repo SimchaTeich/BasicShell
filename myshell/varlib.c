@@ -5,7 +5,7 @@
  *
  * interface:
  *     VLsotre(name, value)     retuens 1 for ok, 0 for no
- *     VLlookup(name)           returns stirng or NULL if not there
+ *     VLlookup(name)           returns string or "" if not there
  *     VLlist()                 prints out current table
  *
  * environment-related funtions
