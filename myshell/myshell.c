@@ -25,7 +25,11 @@ void    setup();
 void    init_pipeline(char *line);
 void    free_pipeline();
 void    sigint_handler(int sig);
+void    init_history();
+void    save_line(char *line);
+void    free_history();
 //void print_pipeline();
+
  
 
 /* details of pipeline are globals      */
@@ -48,6 +52,10 @@ char    * redirect_filename = NULL;        /* target filename to be directend   
 int       quit              = 0;           /* close the shell whene quit == 1        */
 
 
+/* also history is global               */
+history   hist;
+
+
 int main()
 {
     char *line;       /* contains the current raw input */
@@ -56,22 +64,27 @@ int main()
 
     while ((line = next_cmd(prompt, stdin)) != NULL)
     {
+	/* save line for history */
+        save_line(newstr(line, strlen(line)));
+	
 	init_pipeline(line);
 
 	for (cmdno = 0; cmdno < pipeline_size; ++cmdno)
 	{
 	    process();
+	    
 	    if (quit)
 		break;
 	}
-	//print_pipeline();
-	//printf("last_result: %d\n", last_result);
+	
+	/* clean before the next commmand */
 	free(line);
 	free_pipeline();
 	dont_wait     = 0;
 	redirect_out  = 0;
 	redirect_outa = 0;
 	redirect_err  = 0;
+	
 	if (redirect_filename != NULL)
 	    free(redirect_filename);
 	redirect_filename = NULL;
@@ -82,6 +95,7 @@ int main()
 
     free_pipeline();
     free(prompt);
+    free_history();
     return 0;
 }
 
@@ -95,6 +109,8 @@ void setup()
 {
     extern char **environ;
     VLenviron2table(environ);
+
+    init_history();
 
     prompt = newstr(DFL_PROMPT, strlen(DFL_PROMPT));
 
@@ -196,10 +212,12 @@ void free_pipeline()
 }
 
 
+
 void sigint_handler(int sig)
 {
     printf("You typed control-C!");
 }
+
 
 
 void print_pipeline()
@@ -216,3 +234,86 @@ void print_pipeline()
     printf("capacity: %d, size: %d\n", pipeline_capacity, pipeline_size);
 }
 
+
+
+/*
+ * purpose: init the struct history.
+ * returns: nothing. using global
+ * */
+void init_history()
+{
+    int i;
+    
+    for (i = 0; i < MAX_HIST; ++i)
+	hist.cmds[i] = NULL;
+
+    hist.last = 0;
+}
+
+
+
+/*
+ * purpose: append line to the history.
+ * details: act like a cyclic queue.
+ * */
+void save_line(char *line)
+{
+    /* dont save an empty command... */
+    if (line == NULL || line[0] == '\0')
+	return;
+
+    /* free the oldest command */
+    if (hist.cmds[hist.last] != NULL)
+	free(hist.cmds[hist.last]);
+
+    hist.cmds[hist.last] = newstr(line, strlen(line));
+    hist.last = (hist.last + 1) % MAX_HIST;
+}
+
+
+
+/*
+ * purpose: prints the list of history commands
+ * */
+void print_history()
+{
+    int i       = hist.last;
+    int count   = 1;
+    int print_i = 0;
+
+    while (count <= MAX_HIST)
+    {
+	if (hist.cmds[i] == NULL)
+	{
+	    i = (i + 1 == MAX_HIST) ? 0 : i + 1;
+	    ++count;
+	    continue;
+	}
+
+        ++print_i;
+	printf("%4d %s\n", print_i, hist.cmds[i]);
+	
+	i = (i + 1 == MAX_HIST) ? 0 : i + 1;
+	++count;
+    }
+}
+
+
+
+/*
+ * purpose: free history
+ * */
+void free_history()
+{
+    int i;
+    for (i = 0; i < MAX_HIST; ++i)
+    {
+	if (hist.cmds[i] != NULL)
+	{
+            free(hist.cmds[i]);
+	    hist.cmds[i] = NULL;
+	}
+    }
+
+    hist.last = 0;
+}

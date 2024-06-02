@@ -9,6 +9,9 @@
 #include "splitline.h"
 #include "varlib.h"
 
+#ifndef _MYSHELL_H_
+    #include "myshell.h"
+#endif
 
 
 /********************/
@@ -77,6 +80,15 @@ int builtin_command(char **args)
 	{
 	    chdir(args[1]);
 	}
+
+	rv = 1;
+    }
+    
+    /* or just history command      */
+    else if (strcmp(args[0], "history") == 0)
+    {
+        if (args[1] == NULL)
+            print_history();
 
 	rv = 1;
     }

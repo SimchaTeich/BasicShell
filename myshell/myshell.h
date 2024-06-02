@@ -5,6 +5,8 @@
 #define PIPE_READ     0
 #define PIPE_WRITE    1
 
+#define MAX_HIST      20     /* max commands history    */
+
 typedef struct command
 {
     char **arglist;          /* command after split     */
@@ -16,5 +18,13 @@ typedef struct command
 
 
 
+typedef struct history
+{
+    char *cmds[MAX_HIST];      /* this array with the 'last' index, implemented as a queue */
+    int   last;                /* the index of the last command was enter.                 */
+} history;
+
+
 void    fatal(char *s1, char *s2, int n);
+void    print_history();
 
