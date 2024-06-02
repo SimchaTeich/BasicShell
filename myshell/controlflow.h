@@ -1,7 +1,7 @@
 /* controlflow.h
  *     public functions implemented inside controlflow.c
  */
-enum states { NEUTRAL, WANT_THEN, THEN_BLOCK };
+enum states { NEUTRAL, WANT_THEN, THEN_BLOCK, ELSE_BLOCK };
 enum results { SUCCESS, FAIL };
 
 static int if_state  = NEUTRAL;
