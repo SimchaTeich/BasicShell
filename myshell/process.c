@@ -75,7 +75,10 @@ void process()
     
     else if (ok_to_execute())
     {
+	printf("11111111111111\n");
 	replace_dolars(args);
+	printf("222222222222\n");
+	printf("args[0]: %s\n", args[0]);
 
         if (!builtin_command(args))
 	{
@@ -226,11 +229,14 @@ int redirect_err_exist(char **args)
  * */
 void replace_dolars(char **args)
 {
-    int   i;
+    int   i = 1;
     char *arg;
     char *var;
 
-    for (i = 1; args[i]; ++i) /* never replace the first (very stupid, but OK for my H.M...) */
+    if (args[0][0] == '$' && strlen(args[0]) > 1 && (args[1] && args[1][0] != '=' || args[1] == NULL))
+	i = 0;
+
+    for (; args[i]; ++i) /* never replace the first (very stupid, but OK for my H.M...) */
     {
 	if (args[i][0] == '$')
 	{

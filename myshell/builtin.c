@@ -16,6 +16,7 @@
 /********************/
 int assign(char *var, char *val);
 int okname(char *str);
+int read_arg(char *var);
 
 
 
@@ -45,6 +46,11 @@ int builtin_command(char **args)
 	    VLexport(args[1]);
 	
 	rv = 1;
+    }
+    else if (strcmp(args[0], "read") == 0)
+    {
+        if (args[1] != NULL && read_arg(args[1]) != -1)
+	    rv = 1;
     }
 
     /* or change the prompt sign?  */
@@ -135,3 +141,21 @@ int okname(char *str)
     return (cp != str);     /* no empty strings, either */
 }
 
+
+
+/*
+ * purpose: read argument value from user
+ *          and insert it to the variables list.
+ * */
+int read_arg(char *var)
+{
+    int  rv;
+    char val[50];
+
+    fgets(val, 50, stdin);
+    val[strlen(val)-1] = '\0';
+    
+    rv = (okname(var) ? VLstore(var, val) : -1);
+
+    return rv;
+}
