@@ -216,6 +216,7 @@ int redirect_err_exist(char **args)
 }
 
 
+
 /*
  * purpose: repalce every "$var" in args
  *          with the correct "val", when
@@ -228,7 +229,6 @@ void replace_dolars(char **args)
     int   i;
     char *arg;
     char *var;
-
 
     for (i = 1; args[i]; ++i) /* never replace the first (very stupid, but OK for my H.M...) */
     {
@@ -243,7 +243,7 @@ void replace_dolars(char **args)
 		continue;
 	    }
 
-            var = VLlookup(args[i]+1);                    /* +1 because name start after the "$" */
+            var = VLlookup(args[i]+1);                /* +1 because name start after the "$" */
 	    if (strcmp(var, "") != 0)
 	    {
 		arg = args[i];

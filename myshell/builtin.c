@@ -14,7 +14,7 @@
 /********************/
 /* helper functions */
 /********************/
-int assign(char *str);
+int assign(char *var, char *val);
 int okname(char *str);
 
 
@@ -34,9 +34,9 @@ int builtin_command(char **args)
         VLlist();
 	rv = 1;
     }
-    else if (strchr(args[0], '=') != NULL)          /* assignment cmd */
+    else if (args[0][0] == '$' && strcmp(args[1], "=") == 0 && args[2] != NULL)   /* assignment cmd. very stupid. just for H.M... */
     {
-	if (assign(args[0]) != -1)                  /* x-y=123 not ok */
+	if (assign(args[0], args[2]) != -1)                  /* x-y=123 not ok */
             rv = 1;
     }
     else if (strcmp(args[0], "export") == 0)
@@ -103,15 +103,15 @@ int builtin_command(char **args)
  * returns: -1 for illegal lval, or result of VLstore
  * warning: modifies the string, but restore it to normal
  * */
-int assign(char *str)
+int assign(char *var, char *val) //assign(str)
 {
-    char *cp;
+    //char *cp;
     int  rv;
 
-    cp = strchr(str, '=');
-    *cp = '\0';
-    rv = (okname(str) ? VLstore(str, cp+1) : -1);
-    *cp = '=';
+    //cp = strchr(str, '=');
+    //*cp = '\0';
+    rv = (okname(var+1) ? VLstore(var+1, val) : -1); /* +1 because of the '$'*/
+    //*cp = '=';
 
     return rv;
 }
