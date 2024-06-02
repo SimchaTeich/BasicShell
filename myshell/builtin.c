@@ -35,7 +35,7 @@ int builtin_command(char **args)
         VLlist();
 	rv = 1;
     }
-    else if (args[0][0] == '$' && strcmp(args[1], "=") == 0 && args[2] != NULL)   /* assignment cmd. very stupid. just for H.M... */
+    else if (args[0][0] == '$' && args[1] && strcmp(args[1], "=") == 0 && args[2] != NULL)   /* assignment cmd. very stupid. just for H.M... */
     {
 	if (assign(args[0], args[2]) != -1)                  /* x-y=123 not ok */
             rv = 1;
