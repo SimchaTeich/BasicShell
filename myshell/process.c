@@ -75,10 +75,7 @@ void process()
     
     else if (ok_to_execute())
     {
-	printf("11111111111111\n");
 	replace_dolars(args);
-	printf("222222222222\n");
-	printf("args[0]: %s\n", args[0]);
 
         if (!builtin_command(args))
 	{
