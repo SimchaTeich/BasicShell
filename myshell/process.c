@@ -269,7 +269,7 @@ void replace_dolars(char **args)
     char *arg;
     char *var;
 
-    if (args[0][0] == '$' && strlen(args[0]) > 1 && (args[1] && args[1][0] != '=' || args[1] == NULL))
+    if (args[0][0] == '$' && strlen(args[0]) > 1 && ((args[1] && args[1][0] != '=') || args[1] == NULL))
 	i = 0;
 
     for (; args[i]; ++i) /* never replace the first (very stupid, but OK for my H.M...) */

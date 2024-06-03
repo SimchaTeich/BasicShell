@@ -16,6 +16,8 @@
 int syn_err(char *msg);
 void delete_if_word(char *cmd);
 
+static int if_state  = NEUTRAL;
+
 
 /*
  * purpose: determine the shell should execute a command

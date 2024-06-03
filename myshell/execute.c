@@ -41,7 +41,7 @@ void execute()
     extern int       redirect_in;
     extern int       redirect_err;
     extern char    * redirect_filename;
-    int              redirect_out_fd;
+    //int              redirect_out_fd;
     char          ** argv       = pipeline[cmdno].arglist;
 
     if (argv[0] == NULL)

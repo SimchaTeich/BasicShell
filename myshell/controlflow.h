@@ -4,9 +4,9 @@
 enum states { NEUTRAL, WANT_THEN, THEN_BLOCK, ELSE_BLOCK };
 enum results { SUCCESS, FAIL };
 
-static int if_state  = NEUTRAL;
-static int if_result = SUCCESS;
-static int last_state = 0;
+//static int if_state  = NEUTRAL; // in controlflow.c file
+//static int if_result = SUCCESS;
+//static int last_state = 0;
 
 
 

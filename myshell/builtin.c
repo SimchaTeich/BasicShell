@@ -146,7 +146,7 @@ int okname(char *str)
 
     for (cp = str; *cp; ++cp)
     {
-	if (isdigit(*cp) && cp == str || !(isalnum(*cp) || *cp == '_'))
+	if ((isdigit(*cp) && cp == str) || !(isalnum(*cp) || *cp == '_'))
 	    return 0;
     }
 

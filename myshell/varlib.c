@@ -63,6 +63,8 @@ int VLstore(char *name, char *val)
 	itemp->str = s;
 	rv = 0;                                  /* ok!          */
     }
+
+    return rv;
 }
 
 
