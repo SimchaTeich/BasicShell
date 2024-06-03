@@ -38,6 +38,7 @@ void execute()
     extern int       dont_wait;
     extern int       redirect_out;
     extern int       redirect_outa;
+    extern int       redirect_in;
     extern int       redirect_err;
     extern char    * redirect_filename;
     int              redirect_out_fd;
@@ -87,21 +88,42 @@ void execute()
 	{
 	    close(1);
 	    if (creat(redirect_filename, 0664) == -1)
-		perror("creat");
+	    {
+		perror(redirect_filename);
+		return;
+	    }
 	}
 	/* redirect stdout - append*/
-	else if(redirect_outa)
+	else if (redirect_outa)
 	{
 	    close(1);
 	    if (open(redirect_filename, O_APPEND | O_CREAT | O_RDWR, 0664) == -1)
-		perror("open");
+	    {
+		perror(redirect_filename);
+		return;
+	    }
+	}
+        /* redirect stdin */
+	else if (redirect_in)
+	{
+	    int fd;
+	    if ((fd = open(redirect_filename, O_RDONLY)) == -1)
+	    {
+		perror(redirect_filename);
+		return;
+	    }
+	    dup2(fd, 0);
+	    close(fd);
 	}
 	/* rediret stderr */
 	else if (redirect_err)
 	{
 	    close(2);
 	    if (creat(redirect_filename, 0664) == -1)
-		perror("creat");
+	    {
+		perror(redirect_filename);
+		return;
+	    }
 	}
 
         /* update environ with new non-global variables*/

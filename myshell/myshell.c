@@ -47,6 +47,7 @@ int       last_result       = 0;           /* after each execute its get update 
 int       dont_wait         = 0;           /* 1 if '&' at the end of line. 0 for no  */
 int       redirect_out      = 0;           /* 1 if '>' at the end of line. 0 for no  */
 int       redirect_outa     = 0;           /* redirect out-append. sign is '>>'      */
+int       redirect_in       = 0;           /* 1 if '<' at the end of line. 0 for no  */
 int       redirect_err      = 0;           /* 1 if '2>' at the end of line. 0 for no */
 char    * redirect_filename = NULL;        /* target filename to be directend        */
 int       quit              = 0;           /* close the shell whene quit == 1        */
@@ -97,6 +98,7 @@ int main()
 	dont_wait     = 0;
 	redirect_out  = 0;
 	redirect_outa = 0;
+	redirect_in   = 0;
 	redirect_err  = 0;
 	if (redirect_filename != NULL)
 	    free(redirect_filename);

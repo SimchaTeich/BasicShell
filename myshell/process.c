@@ -20,6 +20,7 @@
 int  ampersand_exist(char **args);
 int  redirect_out_exist(char **args);
 int  redirect_outa_exist(char **args);
+int  redirect_in_exist(char **args);
 int  redirect_err_exist(char **args);
 void replace_dolars(char **args);
 
@@ -61,7 +62,13 @@ void process()
         extern int redirect_outa;
 	redirect_outa = 1;
     }
-    /* or maybe redirect the stderr  */
+    /* or '<', using to add to file  */
+    else if (redirect_in_exist(args))
+    {
+        extern int redirect_in;
+	redirect_in = 1;
+    }
+    /* or maybe redirect the stderr '2>' */
     else if (redirect_err_exist(args))
     {
         extern int redirect_err;
@@ -171,6 +178,38 @@ int redirect_outa_exist(char **args)
         ;
 
     if (i > 2 && strcmp(args[i-2], ">>") == 0)
+    {
+        redirect_sign     = args[i-2];
+        redirect_filename = args[i-1]; /* will free later on main() */
+        args[i-2] = NULL;
+        free(redirect_sign);
+
+        rv = 1;
+    }
+
+    return rv;
+}
+
+
+
+/*
+ * purpose: return 1 if tow last strings are
+ *          "<" and some "filename". else 0.
+ * details:  free "<" string. "filename"
+ *           insert to a global and free later.
+ * */
+int redirect_in_exist(char **args)
+{
+    int           i;
+    int           rv = 0;
+    char        * redirect_sign;
+    extern char * redirect_filename;
+
+    /* find NULL index */
+    for (i = 0; args[i]; ++i)
+        ;
+
+    if (i > 2 && strcmp(args[i-2], "<") == 0)
     {
         redirect_sign     = args[i-2];
         redirect_filename = args[i-1]; /* will free later on main() */
