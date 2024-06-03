@@ -53,7 +53,7 @@ int       quit              = 0;           /* close the shell whene quit == 1   
 
 
 /* also history is global               */
-history   hist;
+history   hist;                            /* contains list of the last commands     */
 
 
 int main()
@@ -64,6 +64,20 @@ int main()
 
     while ((line = next_cmd(prompt, stdin)) != NULL)
     {
+	/* check if run the last command. (starts with '!!') */
+	if (strlen(line) >= 2 && line[0] == '!' && line[1] == '!')
+	{
+	    if (hist.cmds[0] == NULL) /* if there is no history*/
+	    {
+	        free(line);
+		line = NULL;
+		continue;
+	    }
+	    printf("%s\n", hist.cmds[hist.last-1]);
+            free(line);
+	    line = newstr(hist.cmds[hist.last-1], strlen(hist.cmds[hist.last-1]));
+	}
+
 	/* save line for history */
         save_line(newstr(line, strlen(line)));
 	
@@ -71,20 +85,19 @@ int main()
 
 	for (cmdno = 0; cmdno < pipeline_size; ++cmdno)
 	{
-	    process();
-	    
+            process();
+	
 	    if (quit)
-		break;
+	        break;
 	}
 	
-	/* clean before the next commmand */
+	    /* clean before the next commmand */
 	free(line);
 	free_pipeline();
 	dont_wait     = 0;
 	redirect_out  = 0;
 	redirect_outa = 0;
 	redirect_err  = 0;
-	
 	if (redirect_filename != NULL)
 	    free(redirect_filename);
 	redirect_filename = NULL;
@@ -93,9 +106,11 @@ int main()
 	    break;
     }
 
+    /* free the rest... */
     free_pipeline();
     free(prompt);
     free_history();
+
     return 0;
 }
 
@@ -317,3 +332,4 @@ void free_history()
 
     hist.last = 0;
 }
+
