@@ -279,6 +279,12 @@ void save_line(char *line)
     if (line == NULL || line[0] == '\0')
 	return;
 
+    /* Do not enter two identical commands in a row */
+    if (hist.last -1 >= 0 &&
+        hist.cmds[hist.last-1] != NULL &&
+	strcmp(line, hist.cmds[hist.last-1]) == 0)
+        return;
+
     /* free the oldest command */
     if (hist.cmds[hist.last] != NULL)
 	free(hist.cmds[hist.last]);

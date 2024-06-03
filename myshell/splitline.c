@@ -3,11 +3,14 @@
 #include <string.h>
 #include "myshell.h"    /* using fatal() */
 #include "splitline.h"
-
-
+#include "conio.h"
 
 #define is_delim(x) ((x)==' ' || (x)=='\t')
 
+
+int isarrow(char c);
+
+static int history_index = -1;
 
 
 /*
@@ -23,10 +26,67 @@ char *next_cmd(char *prompt, FILE *fp)
     int  bufspace = 0;                    /* total size           */
     int  pos = 0;                         /* current position     */
     int  c;                               /* input char           */
+    extern history hist;
+    int  use_history = 0;                 /* 1 if using history    */
+    history_index = -1;                   /* start from the begining evey time */
+
 
     printf("%s", prompt);                         /* prompt user  */
-    while ((c = getc(fp)) != EOF)
+    while ((c = getch()) != EOF)
     {
+	/* need some previous command ? */
+	if(isarrow(c))
+	{
+	    use_history = 1;
+	    
+	    /* update the next index according to the arrow */
+	    switch(getch())
+	    {
+            case 'A':
+		if (history_index == -1)
+		    history_index = hist.last;
+		do
+		{
+		    history_index = (history_index-1 < 0) ?  MAX_HIST-1 : history_index-1;
+		}
+		while (hist.cmds[history_index] == NULL);
+		break;
+	    
+	    case 'B':
+		do
+		{
+		    history_index = (history_index+1 == MAX_HIST) ? 0 :  history_index+1;
+		}
+		while (hist.cmds[history_index] == NULL);
+		break;
+	    }
+
+	    /* print the command to the string  */
+            printf("\x1b[2K");    // Clear entire line
+            printf("\x1b[1F\n");  // Move to beginning of previuos line
+            printf("%s%s", prompt, hist.cmds[history_index]);
+
+	    continue;
+	}
+	else if (!use_history)
+	{
+	    printf("%c", c);
+	}
+
+	if (use_history)
+	{
+	    /* return the command back to stdin */
+            fflush(stdin);
+	    ungetc('\n', stdin);
+            for (int i = strlen(hist.cmds[history_index]) - 1; i >= 0; --i)
+	    {
+		ungetc(hist.cmds[history_index][i], stdin);
+	    }
+
+            printf("\x1b[2K");  // Clear entire line
+            printf("\x1b[1F");  // Move to beginning of previuos line
+	}
+
         /* need space? */
 	if (pos + 1 >= bufspace)                  /* 1 for \0     */
 	{
@@ -168,5 +228,12 @@ char * newstr(char *s, int l)
     strncpy(rv, s, l);
 
     return rv;
+}
+
+
+
+int isarrow(char c)
+{
+    return (c == '\033' && getch() == '[');
 }
 
