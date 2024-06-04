@@ -54,6 +54,11 @@ Because myshell supports the navigation of the last commands by the arrows, with
 
 In other words, you should be precise in entering each input.
 
+Another point,<br />
+in this simple shell the `&`, `>`, `>>`, `2>` and `<` commands only work at the end of a command (or in the last command in a chain of commands with Pipes) and only one of them can be selected at a time. 
+
+For example, `ls -l > file` or `ls -l &` but not both `&` and `>`
+
 ## Examples
 ```
 myshell$ date > myfile
