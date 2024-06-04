@@ -9,7 +9,8 @@ make
 ./myshell
 ```
 
-## About the project
+## Functionality
+
 We were asked to write our own shell. This shell is just a mini version of the original shell.<br />
 
 MyShell supports the following:<br />
@@ -48,3 +49,9 @@ fi
 
 In addition, by clicking on the <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> arrows, you can navigate through the last 20 commands.
 
+## Notes
+Because myshell supports the navigation of the last commands by the arrows, without the need to press enter to receive the arrow, **so in this version it is not possible to edit incoming commands.**
+
+In other words, you should be precise in entering each input.
+
+## Examples
