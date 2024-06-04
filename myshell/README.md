@@ -55,3 +55,103 @@ Because myshell supports the navigation of the last commands by the arrows, with
 In other words, you should be precise in entering each input.
 
 ## Examples
+```
+myshell$ date > myfile
+myshell$ date -u >> myfile
+myshell$ cat myfile
+Tue 04 Jun 2024 07:10:31 AM EDT
+Tue 04 Jun 2024 11:10:50 AM UTC
+myshell$ wc -l < myfile
+2
+myshell$ prompt = ~~~~~~~$ 
+~~~~~~~$ mkdir newdir
+~~~~~~~$ cd newdir
+~~~~~~~$ pwd
+/home/seed/Desktop/BasicShell/myshell/newdir
+~~~~~~~$ touch file1 file2 file3
+~~~~~~~$ ls
+file1  file2  file3
+~~~~~~~$ !!
+ls
+file1  file2  file3
+~~~~~~~$ echo $?
+0
+~~~~~~~$ ls nofile
+ls: cannot access 'nofile': No such file or directory
+~~~~~~~$ echo $?
+512
+~~~~~~~$ ls nofile 2> saveerror
+~~~~~~~$ cat saveerror
+ls: cannot access 'nofile': No such file or directory
+~~~~~~~$ cat > colors.txt
+blue
+black
+red
+red
+green
+blue
+green
+red
+red
+blue
+~~~~~~~$ cat colors.txt
+blue
+black
+red
+red
+green
+blue
+green
+red
+red
+blue
+~~~~~~~$ cat colors.txt | cat | cat | cat
+blue
+black
+red
+red
+green
+blue
+green
+red
+red
+blue
+~~~~~~~$ sort colors.txt | uniq -c | sort -r | head -3
+      4 red
+      3 blue
+      2 green 
+~~~~~~~$ history
+   1 date > myfile
+   2 date -u >> myfile
+   3 cat myfile
+   4 wc -l < myfile
+   5 prompt = ~~~~~~~$
+   6 mkdir newdir
+   7 cd newdir
+   8 pwd
+   9 touch file1 file2 file3
+  10 ls
+  11 echo $?
+  12 ls nofile
+  13 echo $?
+  14 ls nofile 2> saveerror
+  15 cat saveerror
+  16 cat > colors.txt
+  17 cat colors.txt
+  18 cat colors.txt | cat | cat | cat
+  19 sort colors.txt | uniq -c | sort -r | head -3
+  20 history
+~~~~~~~$ if date | grep Fri
+~~~~~~~$ then
+~~~~~~~$ echo "Shabat Shalom"
+~~~~~~~$ else
+~~~~~~~$ echo "Hard way to go"
+"Hard way to go"
+~~~~~~~$ fi
+~~~~~~~$ read msg
+Bye Bye!
+~~~~~~~$ $myname = annonymous
+~~~~~~~$ echo $myname say $msg
+annonymous say Bye Bye!
+~~~~~~~$ quit
+```
