@@ -50,12 +50,7 @@ fi
 In addition, by clicking on the <kbd>&uarr;</kbd> and <kbd>&darr;</kbd> arrows, you can navigate through the last 20 commands.
 
 ## Notes
-Because myshell supports the navigation of the last commands by the arrows, without the need to press enter to receive the arrow, **so in this version it is not possible to edit incoming commands.**
-
-In other words, you should be precise in entering each input.
-
-Another point,<br />
-in this simple shell the `&`, `>`, `>>`, `2>` and `<` commands only work at the end of a command (or in the last command in a chain of commands with Pipes) and only one of them can be selected at a time. 
+In this simple shell the `&`, `>`, `>>`, `2>` and `<` commands only work at the end of a command (or in the last command in a chain of commands with Pipes) and only one of them can be selected at a time. 
 
 For example, `ls -l > file` or `ls -l &` but not both `&` and `>`
 
