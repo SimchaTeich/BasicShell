@@ -54,6 +54,8 @@ void *count_words(void *f)
 	    
 	    prevc = c;
         }
+
+	fclose(fp);
     }
 
     return NULL;
