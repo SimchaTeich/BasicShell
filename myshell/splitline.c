@@ -4,13 +4,20 @@
 #include "myshell.h"    /* using fatal() */
 #include "splitline.h"
 #include "conio.h"
+#include <readline/readline.h>
+#include <readline/history.h>
 
 #define is_delim(x) ((x)==' ' || (x)=='\t')
 
 
-int isarrow(char c);
+int up_arrow(int ,int);
+int down_arrow(int ,int);
 
 static int history_index = -1;
+extern history hist;
+extern char * prompt;
+
+int first_time = 1;
 
 
 /*
@@ -23,94 +30,19 @@ static int history_index = -1;
 char *next_cmd(char *prompt, FILE *fp)
 {
     char *buf;                            /* the buffer           */
-    int  bufspace = 0;                    /* total size           */
-    int  pos = 0;                         /* current position     */
-    int  c;                               /* input char           */
-    extern history hist;
-    int  use_history = 0;                 /* 1 if using history    */
     history_index = -1;                   /* start from the begining evey time */
 
+    rl_bind_keyseq("\\e[A", up_arrow);
+    rl_bind_keyseq("\\e[B", down_arrow);
 
-    printf("%s", prompt);                         /* prompt user  */
-    while ((c = getch()) != EOF)
+    buf = readline(prompt);                /* prompt user  */
+
+    if (buf != NULL && strcmp(buf, "\033[A") != 0 && strcmp(buf, "\033[B") != 0)
     {
-	/* need some previous command ? */
-	if(isarrow(c))
-	{
-	    use_history = 1;
-	    
-	    /* update the next index according to the arrow */
-	    switch(getch())
-	    {
-            case 'A':
-		if (history_index == -1)
-		    history_index = hist.last;
-		do
-		{
-		    history_index = (history_index-1 < 0) ?  MAX_HIST-1 : history_index-1;
-		}
-		while (hist.cmds[history_index] == NULL);
-		break;
-	    
-	    case 'B':
-		do
-		{
-		    history_index = (history_index+1 == MAX_HIST) ? 0 :  history_index+1;
-		}
-		while (hist.cmds[history_index] == NULL);
-		break;
-	    }
-
-	    /* print the command to the string  */
-            printf("\x1b[2K");    // Clear entire line
-            printf("\x1b[1F\n");  // Move to beginning of previuos line
-            printf("%s%s", prompt, hist.cmds[history_index]);
-
-	    continue;
-	}
-	else if (!use_history)
-	{
-	    printf("%c", c);
-	}
-
-	if (use_history)
-	{
-	    /* return the command back to stdin */
-            fflush(stdin);
-	    ungetc('\n', stdin);
-            for (int i = strlen(hist.cmds[history_index]) - 1; i >= 0; --i)
-	    {
-		ungetc(hist.cmds[history_index][i], stdin);
-	    }
-
-            printf("\x1b[2K");  // Clear entire line
-            printf("\x1b[1F");  // Move to beginning of previuos line
-	}
-
-        /* need space? */
-	if (pos + 1 >= bufspace)                  /* 1 for \0     */
-	{
-	    if (bufspace == 0)                    /* y: 1st time  */
-		buf = emalloc(BUFSIZ);
-	    else                                  /* or expand    */
-		buf = erealloc(buf, bufspace+BUFSIZ);
-	    
-	    bufspace += BUFSIZ;                   /* update size  */
-	}
-
-	/* end of command? */
-	if (c == '\n')
-	    break;
-
-	/* no, add to buffer */
-	buf[pos] = c;
-	++pos;
+	history_index = -1;
+	first_time = 1;
     }
 
-    if (c == EOF && pos == 0)             /* EOF and no input     */
-	return NULL;                      /* say so               */
-
-    buf[pos] = '\0';
     return buf;
 }
 
@@ -231,9 +163,42 @@ char * newstr(char *s, int l)
 }
 
 
-
-int isarrow(char c)
+int up_arrow(int a, int b)
 {
-    return (c == '\033' && getch() == '[');
+    /* update history index */
+    if (history_index == -1)
+        history_index = hist.last;
+    do
+    {
+        history_index = (history_index-1 < 0) ?  MAX_HIST-1 : history_index-1;
+    }
+    while (hist.cmds[history_index] == NULL);
+
+    if (first_time == 0)
+        rl_do_undo();
+    
+    rl_insert_text(hist.cmds[history_index]);
+
+    first_time = 0;
+    return 0;
+}
+
+
+int down_arrow(int a, int b)
+{
+    /* update history index */
+    do
+    {
+        history_index = (history_index+1 == MAX_HIST) ? 0 :  history_index+1;
+    }
+    while (hist.cmds[history_index] == NULL);
+
+    if (first_time == 0)
+        rl_do_undo();
+
+    rl_insert_text(hist.cmds[history_index]);
+
+    first_time = 0;
+    return 0;
 }
 
